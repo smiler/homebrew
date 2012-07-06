@@ -12,6 +12,11 @@ class GtkDoc < Formula
   depends_on 'docbook'
   depends_on 'libxml2'
 
+  def patches
+    # Fix pkgconfig install path
+    DATA
+  end
+  
   def install
     # libxml2 must be installed with python support; this should be ensured
     # by the gnome-doc-utils dependency. However it is keg-only, so we have
@@ -19,7 +24,6 @@ class GtkDoc < Formula
     pydir = 'python' + `python -c 'import sys;print(sys.version[:3])'`.strip
     libxml2 = Formula.factory('libxml2')
     ENV.prepend 'PYTHONPATH', libxml2.lib/pydir/'site-packages', ':'
-
     system "./configure", "--disable-debug",
                           "--disable-dependency-tracking",
                           "--prefix=#{prefix}",
@@ -29,3 +33,17 @@ class GtkDoc < Formula
     system "make install"
   end
 end
+__END__
+diff --git a/Makefile.in b/Makefile.in
+index 885011c..eb638a9 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -323,7 +323,7 @@ gtkdocdata_DATA = \
+        up.png                  \
+        style.css
+ 
+-pkgconfigdir = $(datadir)/pkgconfig
++pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = gtk-doc.pc
+ aclocaldir = $(datadir)/aclocal
+ aclocal_DATA = gtk-doc.m4
