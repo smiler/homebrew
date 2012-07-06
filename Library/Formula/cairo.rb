@@ -30,6 +30,10 @@ class Cairo < Formula
     args = %W[
       --disable-dependency-tracking
       --prefix=#{prefix}
+      --enable-quartz
+      --enable-quartz-font
+      --enable-quartz-image
+      --enable-pthread
       --with-x]
 
     args << '--enable-xcb=no' if MacOS.leopard?

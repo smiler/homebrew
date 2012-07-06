@@ -1,5 +1,9 @@
 require 'formula'
 
+# TODO: 
+#  Depend on cairo with quartz
+#  Document patches
+
 class Gtkx < Formula
   homepage 'http://gtk.org/'
   url 'http://ftp.gnome.org/pub/gnome/sources/gtk+/2.24/gtk+-2.24.10.tar.xz'
@@ -22,12 +26,24 @@ class Gtkx < Formula
     cause "Undefined symbols when linking"
   end
 
+  def patches
+    # See patches from https://trac.macports.org/browser/trunk/dports/gnome/gtk2
+    { :p0 => [
+              'https://trac.macports.org/export/95028/trunk/dports/gnome/gtk2/files/patch-aliases.diff',
+              'https://trac.macports.org/export/95028/trunk/dports/gnome/gtk2/files/patch-gtk-builder-convert.diff',
+              'https://trac.macports.org/export/95028/trunk/dports/gnome/gtk2/files/patch-tests_Makefile.in.diff'
+             ]
+    }
+  end
+
   def install
     system "./configure", "--disable-debug",
                           "--disable-dependency-tracking",
                           "--prefix=#{prefix}",
                           "--disable-glibtest",
                           "--disable-introspection",
+                          "--with-gdktarget=quartz",
+                          "--enable-quartz-relocation",
                           "--disable-visibility"
     system "make install"
   end
